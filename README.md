@@ -1,4 +1,4 @@
-# CODE_SEQUENCE_MIDTERMS_PAPER.txt
+# CODE_SEQUENCE_MIDTERMS_PAPER
 ### a doc indicating the sequence in which code for NL's midterms paper ('Listening in on the Noise') was run. This includes code for:
 - data filtering/collection
 - data analysis  
