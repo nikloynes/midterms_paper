@@ -3,7 +3,8 @@
 - data filtering/collection
 - data analysis  
 *NL, 15/12/20*  
-*NL, 18/12/20 -- further adding to this doc*
+*NL, 18/12/20 -- further adding to this doc*  
+*NL, 04/01/21 -- further additions to this doc*
 
 ## 1. FILTERING SMAPP COLLECTIONS FOR PERTINENT TWEETS
 
@@ -83,4 +84,41 @@ c) political-ness [this was not implemented in the paper]
 - Here, I wanted to see what proportion of a given users' tweets could be classified as political. This would then be a kind of proxy for measuring a given users' 'politicalness'. This was implemented by adapting code by Guess & Munger 2018, and also recycling their n=1000 training data to do the same. This uses a simple multinomial naive bayes algorithm on every given tweet. I didn't end up using these estimates in the paper. The code and training data was supplied to me by Kevin Munger. 
 
 - script in repo: **04_C_create_twitter_politics_model.R**
-- resulting data: **/data/user_politicalness_master.csv**
+- resulting data: **/data/user_politicalness_master.csv**  
+
+
+## 5. THE 'CONTROL PANEL'
+
+- The 'control panel' is the second sample used in the analysis of this paper. 
+- It constitutes a randomly selected sample of Twitter users, subset to contain only US Twitter users. The random sample was generated at NYU's SMaPP Lab using a random number generator to randomly generate Twitter user-id like numerical objects and then test if they are in fact registered users on Twitter. 
+- These users were then located using the Loynes, 2021 geolocating method, resulting in a set of 30k US users. This was conducted in 2018 for a different project. 
+
+a) From this source dataset, a 10k sample was randomly drawn, these are the user-ids constituting the control panel. 
+
+- script in repo: **05_making_control_panel.R**  
+- resulting data: **/data/control_panel_user_ids.txt**
+
+b) The same code as for the social panel was applied in order to compute estimated gender and race variables for users in the control panel.
+
+- script in repo: **05_B_get_gener_race.R**
+- resulting data: **/data/ctrl_panel_users_gender_race.csv**
+
+c) ideology. Same as for control panel, using data supplied by Pablo Barbera to merge in the ideology estimates for all users where this score is available. 
+
+- script in repo: **05_C_merging_pabloscores.R**
+- resulting data: **/data/ctrl_panel_all_demographics.csv**
+
+
+## 6. COLLECTING TWEETS FOR BOTH SAMPLES
+
+- In order to run the analysis outlined in this paper, it was first necessary to collect users' tweets. The time frame for tweets considered in this analysis was chosen as starting from 2 months leading up to the 2018 midterms, i.e. November 6th, 2020. Tweets were collected using R and the rtweet package, for both the social and control panels. 
+
+
+
+
+# NEXT: 
+- collecting tweets for each of the samples
+	- make sure to remove identifying elements here, like twitter API keys. also, if there's any key-switching going on here, remove that from the code. 
+
+# NEXT: 
+- code for analysis
