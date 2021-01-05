@@ -6,6 +6,9 @@
 *NL, 18/12/20 -- further adding to this doc*  
 *NL, 04/01/21 -- further additions to this doc*
 
+**NOTE: This repo was compiled a considerable time after the code was originally written and run.** The original code was all stored and run from the author's personal cloud storage, and naming conventions and sequences were not necessarily adhered to in a perfect fashion. Hence, it is possible that comments in scripts describing the purpose of a given script may slightly differ from what is written in this readme. However, this is to be ignored, as this repo and accompanying readme contain all code required to replicate the analysis. If any issues arise, do not hesitate to contact niklasloynes[at]gmail[dot]com. 
+
+
 ## 1. FILTERING SMAPP COLLECTIONS FOR PERTINENT TWEETS
 
 - collections of interest were: 
@@ -111,14 +114,105 @@ c) ideology. Same as for control panel, using data supplied by Pablo Barbera to 
 
 ## 6. COLLECTING TWEETS FOR BOTH SAMPLES
 
-- In order to run the analysis outlined in this paper, it was first necessary to collect users' tweets. The time frame for tweets considered in this analysis was chosen as starting from 2 months leading up to the 2018 midterms, i.e. November 6th, 2020. Tweets were collected using R and the rtweet package, for both the social and control panels. 
+- In order to run the analysis outlined in this paper, it was first necessary to collect users' tweets. The time frame for tweets considered in this analysis was chosen as starting from 2 months leading up to the 2018 midterms (November 6th, 2020). Tweets were collected using R and the rtweet package, for both the social and control panels.
 
+a) social panel - script that iterates through all the users, uses the *user-timeline* Twitter api endpoint, and gets their most recent n=3200 tweets. Then, tweets that aren't within the relevant time window (2 months leading up to election) are dumped. Tweets are then written to file in a per-day basis, so all tweets from a given day are saved as ./tweets/{USER_ID}/{DD_MM_YY}.csv
 
+- script in repo: **06_A_get_tweets_social_panel.R**  
+- resulting data: available upon request (see Twitter's T&Cs)
 
+b) control panel - same as in a), but with different user ids. 
 
-# NEXT: 
-- collecting tweets for each of the samples
-	- make sure to remove identifying elements here, like twitter API keys. also, if there's any key-switching going on here, remove that from the code. 
+- script in repo: **06_B_get_tweets_control_panel.R**
+- resulting data: available upon request (see Twitter's T&Cs)
 
-# NEXT: 
-- code for analysis
+## 7. PRE-PROCESSING: EXTRACTING TWEETS MATCHING CRITERIA FOR ANALYSIS
+
+- this paper aims to predict individual-level vote choice of Twitter users through machine learning methods on text analysis, trained through distant supervision. As is outlined in the Paper in section 4, this entails filtering users' tweet text for a range of pre-defined keywords. These keywords are on the one side used for training the distantly supervised models ('the i'm voting keywords'), and on the other side used for predicting the previously observed quantities in users' tweets not featuring the training keywords ('trump', 'kavanaugh', 'dems_hashtags', 'reps_hashtags', 'midterms', 'democrats', 'republicans'). 
+
+- at this stage of the data engineering for this paper, all users' tweets are filtered for these pertinent keywords, and if there is a match, their matches are written out to new (duplicate) csv files with the same naming conventions, allowing for easy access in future classification models. 
+
+- **NOTE**: While initially conceiving of and running this code, I wanted to run this analysis in a wave-style approach, akin to longitudinal panel studies, in order to potentially detect individual-level change over time (i.e. as the election comes nearer). However, given the small-ish numbers for especially the training category, I later decided to drop this approach and analyse all the data en-bloc. Hence, the scripts prefixed with *07_* aren't nearly as efficient or as easy to understand as they could be, but this is how the research was conducted. Below are the dates specified for the individual waves. These can be inserted into the code to run all the code for the individual waves. 
+
+WAVE      DATE RANGE  
+WAVE 01   - 02/10  
+WAVE 02   > 03/10 - 09/10  
+WAVE 03   > 10/10 - 16/10  
+WAVE 04   > 17/10 - 23/10  
+WAVE 05   > 24/10 - 30/10  
+WAVE 06   > 31/10 - 06/11  
+
+a) social panel: tweet filtering scripts separated by waves. Here, I present the script for wave 6, whereby the *date_range* variable can be edited in order to re-run this code for the other waves with the date ranges specified above. 
+
+- script in repo: **07_A_filtering_tweets_WAVE_0X_social_panel.R**  
+- resulting data: Tweet subsets at the user-level, reflecting each of the keyword categories (separated by wave). Available upon request (see Twitter's T&Cs)
+
+b) control panel: tweet filtering scripts run for all waves in one script (This script was run later, and knowing the research configuration better, hence the more efficiently specified code). 
+
+- script in repo: **07_B_filtering_tweets_all_waves_control_panel.R**
+- resulting data: Tweet subsets at the user-level, reflecting each of the keyword categories (separated by wave). Available upon request (see Twitter's T&Cs)
+
+c) concatenating wave-level keyword tweets (for all users, not separated by users) into all-wave tweet csvs for each of the keywords. This is done for both the social and control panels. 
+
+- scripts in repo: **07_C1_merging_keyword_tweets_social_panel.R** and **07_C2_merging_keyword_tweets_control_panel.R**
+
+- resulting data: csv files, for each of the keywords, containing all tweets containing these keywords, for both panels. Available upon request (see Twitter's T&Cs). 
+
+## 8. HAND-LABELLING TWEETS CONTAINING VOTING-RELEVANT KEYWORDS FOR USER-LEVEL VOTING INTENTION
+
+- In order to train a dinstantly supervised text classification model on users' electorally salient tweets (containing keywords identified in 7.), it was first necessary to hand-annotate tweets containing the 'I'm voting' keyword family. The keywords which met the inclusion criteria: *"my vote", "i'm voting", "i am voting", "i'll be voting", "i will be voting", "i am going to vote", "i will vote", "we'll vote", "we will vote", "we are voting", "i choose to vote", "im voting", "ill be voting", "myvote", "myvote2018", "imvoting"*. 
+
+a) For this purpose, all pertinent tweets were exported to json format for both panels, and then displayed to the expert human coder (me, the author) through the Collabortweet tweet coding interface (github.com/cbuntain/collabortweet) at the *user-level*, meaning that oftentimes there would be several tweets under consideration for labelling a given user's voting intention. 
+
+- scripts in repo: **08_A1_extracting_imvoting_json.R** (unfortunately, I can't find the script I used to do the same for the social panel. However, the csv with all 'im_voting' tweets was collated in the *07_C* scripts, and converting this to json is rather trivial, so it doesn't really matter)
+
+- resulting data: **./data/imvoting_coded.csv** - csvs for both panels with labels at the user-level indicating the party a user is likely to vote for, given what they've tweeted. Can also be 'RU' (relevant but unknown) or 'NA'. Data available upon request (see Twitter's T&Cs)  
+
+b) cleaning, auditing, exploring and exploring descriptives for coded 'i'm voting' data for social panel, combining wave-level hand-labelled data to data for all waves. For the control panel, this step is undertaken in the next script, as data at the wave-level didn't have to be merged together here. 
+
+- script in repo: **08_B1_exploring_labelled_data_social_panel.R**
+- resulting data: **/data/panel_users_all_declared_voters.csv** - a csv with all panel members, their predicted socio-demographic metadata, and hand-labelled vote choice for those that it has been predicted for at this stage.   
+
+## 9. TRAINING & TUNING MODELS AND DEFINING BEST MODEL SPECIFICATIONS
+
+- Next, textmodels had to be trained and tuned. For each of the panels, this is done in one big script, for each of the textmodels. The output from these scripts are the model specifications for each configuration, i.e. the numbers chosen for each of the hyperparameters. Training data used in these scripts are the *imvoting_coded.csv* files obtained from steps outlined in 8. For the control panel, the concatenation of user-level vote choice and user-level demographics is undertaken in this step rather than step 8.
+
+- This training and tuning step is done with the models predicting two different outcome categories. First, the probability of a vote being for the Democrats, *_dems*, and second, the probability of a vote being for the Republicans, *_reps*. This means there are a total of 2 tuning scripts for each panel. 
+
+- scripts in repo: 
+	- **09_A1_tune_models_dems_social_panel.R**
+	- **09_A2_tune_models_reps_social_panel.R**
+	- **09_B1_tune_models_dems_control_panel.R**
+	- **09_B2_tune_models_reps_control_panel.R**
+
+- resulting data:
+	- **/data/social_panel_dems_model_specs.csv**
+	- **/data/social_panel_reps_model_specs.csv**
+	- **/data/ctrl_panel_dems_model_specs.csv**
+	- **/data/ctrl_panel_reps_model_specs.csv**
+
+## 10. RUNNING TEXTMODELS
+
+- Now comes the core analysis step of the paper - the application of the trained textmodels (Naive Bayes) on previously unseen data, in order to predict a probability of a vote for a given party for as many users as possible (contingent on their having tweeted something caught by any of the keywords previously mentioned). 
+
+a) social panel
+a1) social panel, dems
+a2) social panel, reps
+
+b) control panel
+b1) control panel, dems
+b2) control panel, reps
+
+c) social panel classifiers on ctrl panel data
+
+d) control panel classifiers on social panel data
+
+## 11. RUNNING LOGISTIC REGRESSION MODELS
+
+- this is done using all available predicted user-level data to predict voting classifications for users previously not classified by any of the models
+
+## 12. AGGREGATING VOTES
+
+- here, classifications are aggregted up, geographically separated, in order to see how the vote shares look. 
+
+## 13. PLOTS
