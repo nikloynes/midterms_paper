@@ -195,24 +195,33 @@ b) cleaning, auditing, exploring and exploring descriptives for coded 'i'm votin
 
 - Now comes the core analysis step of the paper - the application of the trained textmodels (Naive Bayes) on previously unseen data, in order to predict a probability of a vote for a given party for as many users as possible (contingent on their having tweeted something caught by any of the keywords previously mentioned). 
 
-a) social panel
-a1) social panel, dems
-a2) social panel, reps
+- all 5 models - *trump, kavanuagh, midterms, democrat, republican* - are run in one big loop in each script. The output quantity for each script is a user-level probability of vote==dems or vote==reps. This is contingent on a given user having tweeted something that was captured by the keywords relevant to the 5 specific models. 
 
-b) control panel
-b1) control panel, dems
-b2) control panel, reps
+a) Prediction - vote==democrats. 
 
-c) social panel classifiers on ctrl panel data
+- scripts in repo: **10_A1_all_models_dems_social_panel.R** & **10_A2_all_models_dems_control_panel.R**
+- resulting data: **/data/all_models_no_waves_dems-social_panel.csv** & **/data/all_models_no_waves_dems-ctrl_panel.csv**
 
-d) control panel classifiers on social panel data
+b) Prediction - vote==republicans. 
+
+- scripts in repo: **10_B1_all_models_reps_social_panel.R** & **10_B2_all_models_reps_control_panel.R**
+- resulting data: **/data/all_models_no_waves_reps-social_panel.csv** & **/data/all_models_no_waves_reps-ctrl_panel.csv**
+
+c) "out of sample classification" - Here, we run the trained model from the social panel on the control panel data and vice versa. Here, we only predict probability(vote==dems) - as, in any case we define a vote for democrats as prob(vote==dem)>.5 and a vote for the republicans as prob(vote==dem)<.5
+
+- scripts in repo: **10_C1_all_models_dems_SPonCP.R** & **10_C2_all_models_dems_CPonSP** 
+- resulting data: **SPonCP_nowaves_dems.csv** & **CPonSP_nowaves_dems.csv**
 
 ## 11. RUNNING LOGISTIC REGRESSION MODELS
 
-- this is done using all available predicted user-level data to predict voting classifications for users previously not classified by any of the models
+- As a further tactic for exploring vote choice classification, I built a logistic regression model which predicts a binary vote choice value based on available user-level metadata. The scripts produce csv files with all predicted values - probabilities of vote==dem, vote==rep and resulting vote variables, in order to provide the maximum amount of information in a single dataset. 
+
+- scripts in repo: **11_A_logit_social_panel.R** & **11_B_logit_control_panel.R**
+- resulting data: **/data/all_vote_estimates-social_panel.csv** & **data/all_vote_estimates-ctrl_panel.csv**
 
 ## 12. AGGREGATING VOTES
 
-- here, classifications are aggregted up, geographically separated, in order to see how the vote shares look. 
+- In the final analysis script for this paper, the predicted user-level vote choices are aggregated, and then state-level percentages are calculated for the four states in question for this paper, California, Texas, New York and Florida. This is done for all possible model configurations, in weighted and unweighted states. This is done for the social and control panels in one script.
 
-## 13. PLOTS
+- scripts in repo: **12_aggregating_votes.R**
+- resulting data: **/data/state_level_aggregations.csv**
