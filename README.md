@@ -1,10 +1,12 @@
 # CODE_SEQUENCE_MIDTERMS_PAPER
 ### a doc indicating the sequence in which code for NL's midterms paper ('Listening in on the Noise') was run. This includes code for:
 - data filtering/collection
-- data analysis  
+- data analysis
+
 *NL, 15/12/20*  
 *NL, 18/12/20 -- further adding to this doc*  
 *NL, 04/01/21 -- further additions to this doc*
+*NL, 05/01/21 -- completion of the doc*
 
 **NOTE: This repo was compiled a considerable time after the code was originally written and run.** The original code was all stored and run from the author's personal cloud storage, and naming conventions and sequences were not necessarily adhered to in a perfect fashion. Hence, it is possible that comments in scripts describing the purpose of a given script may slightly differ from what is written in this readme. However, this is to be ignored, as this repo and accompanying readme contain all code required to replicate the analysis. If any issues arise, do not hesitate to contact niklasloynes[at]gmail[dot]com. 
 
