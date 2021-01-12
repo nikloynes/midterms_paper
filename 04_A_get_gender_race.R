@@ -24,15 +24,7 @@ source("~/Desktop/GEO_LOCATING_REPO/geolocation/functions/network_analysis_funct
 
 # twitter API keys
 
-api_keys <- c("~/Dropbox/PhD/Data/US_Placenames/api_keys/TatiusMethodius/geo_tweeter_01_init.R",
-              "~/Dropbox/PhD/Data/US_Placenames/api_keys/VladislavHasan/geo_tweeter_04_init.R",
-              "~/Dropbox/PhD/Data/US_Placenames/api_keys/RadobodYalcin/geo_tweeter_07_init.R",
-              "~/Dropbox/PhD/Data/US_Placenames/api_keys/TatiusMethodius/geo_tweeter_02_init.R",
-              "~/Dropbox/PhD/Data/US_Placenames/api_keys/VladislavHasan/geo_tweeter_05_init.R",
-              "~/Dropbox/PhD/Data/US_Placenames/api_keys/RadobodYalcin/geo_tweeter_08_init.R",
-              "~/Dropbox/PhD/Data/US_Placenames/api_keys/TatiusMethodius/geo_tweeter_03_init.R",
-              "~/Dropbox/PhD/Data/US_Placenames/api_keys/VladislavHasan/geo_tweeter_06_init.R",
-              "~/Dropbox/PhD/Data/US_Placenames/api_keys/RadobodYalcin/geo_tweeter_09_init.R")
+api_keys <- c("~/Dropbox/PhD/Data/US_Placenames/api_keys/TatiusMethodius/geo_tweeter_01_init.R")
 
 
 
